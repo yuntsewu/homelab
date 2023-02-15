@@ -1,0 +1,36 @@
+pihole:
+  persistentVolumeClaim:
+    enabled: true
+    storageClass: longhorn
+  
+  serviceWeb:
+    loadBalancerIP: 192.168.x.x
+    annotations:
+      metallb.universe.tf/allow-shared-ip: pihole-svc
+    type: LoadBalancer
+  
+  serviceDns:
+    loadBalancerIP: 192.168.x.x
+    annotations:
+      metallb.universe.tf/allow-shared-ip: pihole-svc
+    type: LoadBalancer
+  
+  serviceDhcp:
+    loadBalancerIP: 192.168.x.x
+    annotations:
+      metallb.universe.tf/allow-shared-ip: pihole-svc
+    type: LoadBalancer
+  
+  podDnsConfig:
+    enabled: true
+    policy: "None"
+    nameservers:
+    - 127.0.0.1
+    - 8.8.8.8
+  
+  #! use an existing secret in a prod env
+  adminPassword: "P@$$word123!"
+  
+  extraEnvVars: {
+    DNSMASQ_USER: "root"
+  }

@@ -1,0 +1,11 @@
+metallb:
+  configInline:
+    address-pools:
+    - name: default
+      protocol: layer2
+      addresses: 
+      - 192.168.x.x-192.168.x.x
+    - name: pihole-svc
+      protocol: layer2
+      addresses:
+      - 192.168.x.x-192.168.x.x

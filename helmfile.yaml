@@ -1,0 +1,40 @@
+releases:
+- name: metallb
+  namespace: metallb
+  chart: ./platform-system/metallb
+
+# - name: external-dns
+#   namespace: external-dns
+#   chart: ./platform-system/external-dns
+
+# - name: cert-manager
+#   namespace: cert-manager
+#   chart: ./platform-system/cert-manager
+
+- name: longhorn
+  namespace: longhorn
+  chart: ./platform-system/longhorn
+
+# - name: ingress-nginx
+#   namespace: ingress-nginx
+#   chart: ./platform-system/ingress-nginx
+#   needs:
+#     - metallb/metallb
+#     - external-dns/external-dns
+#     - cert-manager/cert-manager
+
+- name: argo-cd
+  namespace: argo-cd
+  chart: ./platform-development/argo-cd
+  needs:
+    - metallb/metallb
+  #   - ingress-nginx/ingress-nginx
+  #   - cert-manager/cert-manager
+
+# - name: gitea
+#   namespace: gitea
+#   chart: ./platform-development/gitea
+#   needs:
+#     - longhorn/longhorn
+#     - ingress-nginx/ingress-nginx
+#     - cert-manager/cert-manager

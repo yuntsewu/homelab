@@ -1,0 +1,45 @@
+concourse:
+  concourse:
+    web:
+      externalUrl: "https://concourse.domain.com"
+      teams:
+        - app
+      createTeamNamespaces: true
+      keepNamespaces: true
+      auth:
+        mainTeam:
+          localUser: "CHANGEME"
+    worker:
+      runtime: containerd
+  postgresql:
+    global:
+      storageClass: longhorn
+  persistence:
+    enabled: true
+    worker:
+      storageClass: longhorn
+  web:
+    enabled: true
+    # service:
+    #   api:
+    #     type: LoadBalancer
+    #     annotations:
+    #       metallb.universe.tf/allow-shared-ip: default
+    #   workerGateway:
+    #     type: LoadBalancer
+    #     annotations:
+    #       metallb.universe.tf/allow-shared-ip: default
+    ingress:
+      enabled: true
+      annotations: 
+        kubernetes.io/ingress.class: nginx
+        cert-manager.io/cluster-issuer: letsencrypt-prod
+      hosts: 
+        - concourse.domain.com
+      tls:
+        - secretName: concourse-domain-com-tls
+          hosts:
+            - concourse.domain.com
+  secrets:
+    create: true
+    localUsers: "CHANGEME:P@$$word123!"

@@ -1,0 +1,75 @@
+nextcloud:
+  ingress:
+    enabled: true
+    className: nginx
+    annotations:
+     nginx.ingress.kubernetes.io/proxy-body-size: 4G
+     kubernetes.io/tls-acme: "true"
+     cert-manager.io/cluster-issuer: letsencrypt-prod
+     nginx.ingress.kubernetes.io/server-snippet: |-
+       server_tokens off;
+       proxy_hide_header X-Powered-By;
+
+       rewrite ^/.well-known/webfinger /public.php?service=webfinger last;
+       rewrite ^/.well-known/host-meta /public.php?service=host-meta last;
+       rewrite ^/.well-known/host-meta.json /public.php?service=host-meta-json;
+       location = /.well-known/carddav {
+         return 301 $scheme://$host/remote.php/dav;
+       }
+       location = /.well-known/caldav {
+         return 301 $scheme://$host/remote.php/dav;
+       }
+       location = /robots.txt {
+         allow all;
+         log_not_found off;
+         access_log off;
+       }
+       location ~ ^/(?:build|tests|config|lib|3rdparty|templates|data)/ {
+         deny all;
+       }
+       location ~ ^/(?:autotest|occ|issue|indie|db_|console) {
+         deny all;
+       }
+    tls:
+      - secretName: nextcloud-domain-com-tls
+        hosts:
+          - nextcloud.domain.com
+
+  nextcloud:
+    host: nextcloud.domain.com
+    username: user
+    password: P@$$word123!
+  phpClientHttpsFix:
+    enabled: true    
+  internalDatabase:
+    enabled: false
+  mariadb:
+    enabled: true
+    auth:
+      database: nextcloud
+      username: nextcloud
+      password: nextcloud
+    primary:
+      persistence:
+        enabled: true
+        storageClass: "longhorn"
+
+  redis:
+    enabled: true
+    global:
+      persistence:
+        enabled: true
+
+  ## Cronjob to execute Nextcloud background tasks
+  ## ref: https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/background_jobs_configuration.html#webcron
+  ##
+  cronjob:
+    enabled: true
+
+  ## Enable persistence using Persistent Volume Claims
+  ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+  ##
+  persistence:
+    enabled: true
+    storageClass: "longhorn"
+    size: 100Gi

@@ -1,0 +1,57 @@
+artifactory:
+  installer:
+    platform: art-oss-helm
+  installerInfo: '{"productId": "Helm_artifactory-oss/{{ .Chart.Version }}", "features": [ { "featureId": "Platform/{{ default "kubernetes" .Values.installer.platform }}"}]}'
+  artifactory:
+    name: artifactory
+    image:
+      registry: releases-docker.jfrog.io
+      repository: jfrog/artifactory-oss
+    resources:
+      requests:
+        cpu: "500m"
+        memory: "1Gi"
+      limits:
+        cpu: "4"
+        memory: "11Gi"
+    javaOpts:
+      xms: "2g"
+      xmx: "10g"
+    persistence:
+      enabled: true
+      storageClassName: longhorn
+    service:
+      type: NodePort
+  postgresql:
+    persistence:
+      enabled: true
+      storageClass: longhorn
+      size: "20Gi"
+  nginx:
+    enabled: false
+  databaseUpgradeReady: true
+  unifiedUpgradeAllowed: true
+  ingress:
+    enabled: true
+    defaultBackend:
+      enabled: true
+    hosts: 
+      - artifactory.domain.com
+    routerPath: /
+    artifactoryPath: /artifactory/
+    annotations: 
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"
+      kubernetes.io/tls-acme: "true"
+      kubernetes.io/ingress.class: "nginx"
+      nginx.ingress.kubernetes.io/proxy-body-size: "0"
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+      nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+      nginx.ingress.kubernetes.io/proxy-body-size: "0"
+      nginx.ingress.kubernetes.io/rewrite-target: "/"
+      nginx.ingress.kubernetes.io/configuration-snippet: |
+        rewrite ^/(v2)/token /artifactory/api/docker/null/v2/token;
+        rewrite ^/(v2)/([^\/]*)/(.*) /artifactory/api/docker/$2/$1/$3;
+    tls: 
+      - secretName: artifactory-domain-com-tls
+        hosts:
+          - artifactory.domain.com

@@ -1,0 +1,61 @@
+gitlab:
+  certmanager:
+    install: false
+  certmanager-issuer:
+    email: example@domain.com
+  nginx-ingress:
+    enabled: false
+  global:
+    edition: ce
+    hosts:
+      domain: devops.domain.com
+      externalIP: 192.168.x.x
+    ingress:
+      configureCertmanager: false
+      class: nginx
+      annotations:
+        kubernetes.io/tls-acme: true
+    shell:
+      port: 222
+  gitlab:
+    webservice:
+      ingress:
+        tls:
+          secretName: gitlab-gitlab-tls
+    kas:
+      ingress:
+        tls:
+          secretName: gitlab-kas-tls
+    gitaly:
+      persistence:
+        storageClass: longhorn
+  postgresql:
+    persistence:
+      storageClass: longhorn
+  minio:
+    persistence:
+      storageClass: longhorn
+    ingress:
+      tls:
+        secretName: gitlab-minio-tls
+  registry:
+    ingress:
+      tls:
+        secretName: gitlab-registry-tls
+  redis:
+    master:
+      persistence:
+        storageClass: longhorn
+  upgradeCheck:
+    enabled: false
+  gitlab-runner:
+    runners:
+      privileged: true
+      config: |
+        [[runners]]
+          [runners.kubernetes]
+            privileged = true
+          [[runners.kubernetes.volumes.empty_dir]]
+            name = "docker-certs"
+            mount_path = "/certs/client"
+            medium = "Memory"

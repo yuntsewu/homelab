@@ -1,0 +1,20 @@
+vaultwarden:
+  vaultwarden:
+    domain: https://vaultwarden.domain.com
+    allowSignups: false
+    admin:
+      enabled: true
+  ingress:
+    enabled: true
+    host: vaultwarden.domain.com
+    annotations: 
+      kubernetes.io/ingress.class: nginx
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+      kubernetes.io/tls-acme: "true"
+    tls:
+     - secretName: vaultwarden-domain-com-tls
+       hosts:
+         - vaultwarden.domain.com
+  persistence:
+    enabled: true
+    storageClass: "longhorn"

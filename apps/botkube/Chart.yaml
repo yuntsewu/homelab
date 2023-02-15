@@ -1,0 +1,7 @@
+apiVersion: v2
+name: botkube
+version: 0.0.1
+dependencies:
+  - name: botkube
+    version: 0.15.0 
+    repository: https://charts.botkube.io

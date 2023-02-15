@@ -1,0 +1,18 @@
+external-dns:
+  cloudflare:
+    apiToken: "CHANGEME"
+    apiKey: "CHANGEME"
+    email: "example@domain.com"
+    proxied: true
+  provider: cloudflare
+  env:
+  - name: CF_API_TOKEN
+    value: "CHANGEME"
+  - name: CF_API_KEY
+    value: "CHANGEME"
+  - name: CF_API_EMAIL
+    value: "example@domain.com"
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true

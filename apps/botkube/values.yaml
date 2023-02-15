@@ -1,0 +1,16 @@
+botkube:
+  communications:
+    default-group:
+      socketSlack:
+        enabled: true
+        channels:
+          default:
+            name: general
+        appToken: CHANGEME
+        botToken: CHANGEME
+  settings:
+    clusterName: universe
+  executors:
+    kubectl-read-only:
+      kubectl:
+        enabled: true

@@ -1,0 +1,7 @@
+apiVersion: v2
+name: artifactory
+version: 0.0.1
+dependencies:
+  - name: artifactory
+    version: 107.46.11
+    repository: https://charts.jfrog.io

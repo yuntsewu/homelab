@@ -1,0 +1,11 @@
+gitops:
+  repo: git@github.com:yuntsewu/cosmos.git
+  revision: main
+stacks:
+  - name: platform-bootstrap
+    namespace: argo-cd  # Override default value
+  - name: platform-system
+  - name: platform-monitoring
+    ServerSideApply: true
+  - name: platform-development
+  - name: apps
